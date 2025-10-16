@@ -1,17 +1,35 @@
 "use client";
 
+import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const router = useRouter();
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const { error } = await supabase
+      .from("user_tb")
+      .select("*")
+      .eq("email", email)
+      .eq("password", password)
+      .single();
+
+    if (error) {
+      alert("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+      console.log(error);
+      return;
+    }
+
     router.push("/dashboard");
     console.log("Login form submitted!");
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 text-black">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-2xl">
         <h1 className="mb-6 text-center text-3xl font-bold text-blue-600">
           Login
@@ -29,6 +47,7 @@ export default function Login() {
               type="email"
               placeholder="Email"
               className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -45,6 +64,7 @@ export default function Login() {
               type="password"
               placeholder="Password"
               className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>

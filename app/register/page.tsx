@@ -3,10 +3,18 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { supabase } from "@/lib/supabaseClient";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [image_file, setImageFile] = useState<File | null>(null);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [gender, setGender] = useState("");
 
+  const router = useRouter();
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -15,19 +23,62 @@ export default function Register() {
         setPreviewImage(reader.result as string);
       };
       reader.readAsDataURL(file);
+      setImageFile(file);
     } else {
       setPreviewImage(null);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Logic for form submission goes here
-    console.log("Form submitted!");
+    // บันทึกรูปภาพไปยัง Supabase Storage
+    let image_url = "";
+    if (image_file) {
+      const new_image_file_name = `${Date.now()}-${image_file.name}`;
+
+      // อัปโหลดรูปภาพไปยัง Supabase Storage
+      const { data, error } = await supabase.storage
+        .from("user_bk")
+        .upload(new_image_file_name, image_file);
+      if (error) {
+        alert("เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ");
+        console.log(error.message);
+        return;
+      } else {
+        // get url ของรูปภาพที่อัปโหลด
+        const { data } = supabase.storage
+          .from("user_bk")
+          .getPublicUrl(new_image_file_name);
+        image_url = data.publicUrl;
+      }
+    }
+
+    // บันทึกข้อมูลงานลงในตาราง tasks
+    const { data, error } = await supabase.from("user_tb").insert({
+      fullname: fullName,
+      email: email,
+      password: password,
+      gender: gender,
+      user_image_url: image_url,
+    });
+
+    if (error) {
+      console.log(error.message);
+      return;
+    } else {
+      alert("บันทึกข้อมูลเรียบร้อย");
+      setFullName("");
+      setEmail("");
+      setPassword("");
+      setGender("");
+      setPreviewImage(null);
+      image_url = "";
+      router.push("/login");
+    }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 text-black">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-2xl">
         <h1 className="mb-6 text-center text-3xl font-bold text-blue-600">
           Register
@@ -45,6 +96,8 @@ export default function Register() {
               type="text"
               placeholder="Full Name"
               className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
               required
             />
           </div>
@@ -61,6 +114,8 @@ export default function Register() {
               type="email"
               placeholder="Email"
               className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -77,6 +132,8 @@ export default function Register() {
               type="password"
               placeholder="Password"
               className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
@@ -92,6 +149,7 @@ export default function Register() {
                   name="gender"
                   value="male"
                   className="text-blue-600 focus:ring-blue-500"
+                  onChange={(e) => setGender(e.target.value)}
                 />
                 <span className="ml-2 text-gray-700">ชาย</span>
               </label>
@@ -101,6 +159,7 @@ export default function Register() {
                   name="gender"
                   value="female"
                   className="text-blue-600 focus:ring-blue-500"
+                  onChange={(e) => setGender(e.target.value)}
                 />
                 <span className="ml-2 text-gray-700">หญิง</span>
               </label>
