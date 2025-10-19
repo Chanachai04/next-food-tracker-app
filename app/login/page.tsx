@@ -11,7 +11,7 @@ export default function Login() {
   const router = useRouter();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("user_tb")
       .select("*")
       .eq("email", email)
@@ -24,7 +24,7 @@ export default function Login() {
       return;
     }
 
-    router.push("/dashboard");
+    router.push("/dashboard/" + data.id);
     console.log("Login form submitted!");
   };
 

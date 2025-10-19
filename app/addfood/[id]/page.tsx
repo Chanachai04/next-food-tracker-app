@@ -3,10 +3,19 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { supabase } from "@/lib/supabaseClient";
+import { useParams, useRouter } from "next/navigation";
 
 export default function AddFood() {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [image_file, setImageFile] = useState<File | null>(null);
 
+  const [foodname, setFoodname] = useState("");
+  const [meal, setMeal] = useState("");
+  const [fooddate_at, setFooddate_at] = useState("");
+
+  const { id } = useParams();
+  const router = useRouter();
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -15,15 +24,58 @@ export default function AddFood() {
         setPreviewImage(reader.result as string);
       };
       reader.readAsDataURL(file);
+      setImageFile(file);
     } else {
       setPreviewImage(null);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Logic to save the new food item goes here
-    console.log("Food item saved!");
+
+    let image_url = "";
+    if (image_file) {
+      const new_image_file_name = `${Date.now()}-${image_file.name}`;
+
+      // อัปโหลดรูปภาพไปยัง Supabase Storage
+      const { data, error } = await supabase.storage
+        .from("food_bk")
+        .upload(new_image_file_name, image_file);
+      if (error) {
+        alert("เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ");
+        console.log(error.message);
+        return;
+      } else {
+        // get url ของรูปภาพที่อัปโหลด
+        const { data } = supabase.storage
+          .from("food_bk")
+          .getPublicUrl(new_image_file_name);
+        image_url = data.publicUrl;
+      }
+    }
+
+    const { data, error } = await supabase.from("food_td").insert({
+      foodname: foodname,
+      meal: meal,
+      fooddate_at: fooddate_at,
+      food_image_url: image_url,
+      user_id: id,
+    });
+
+    if (error) {
+      alert("เกิดข้อผิดพลาดในการเพิ่มรายการอาหาร");
+      console.log(error);
+      return;
+    } else {
+      alert("รายการอาหารถูกเพิ่มเรียบร้อยแล้ว");
+      console.log(data);
+      setFoodname("");
+      setMeal("");
+      setFooddate_at("");
+      setPreviewImage(null);
+      image_url = "";
+      router.push("/dashboard/" + id);
+    }
   };
 
   return (
@@ -47,6 +99,8 @@ export default function AddFood() {
               type="text"
               placeholder="ชื่ออาหาร"
               className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              value={foodname}
+              onChange={(e) => setFoodname(e.target.value)}
               required
             />
           </div>
@@ -62,6 +116,8 @@ export default function AddFood() {
             <select
               id="mealType"
               className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              value={meal}
+              onChange={(e) => setMeal(e.target.value)}
               required
             >
               <option value="">เลือกมื้ออาหาร</option>
@@ -84,6 +140,8 @@ export default function AddFood() {
               id="date"
               type="date"
               className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              value={fooddate_at}
+              onChange={(e) => setFooddate_at(e.target.value)}
               required
             />
           </div>
@@ -129,7 +187,7 @@ export default function AddFood() {
 
           {/* Action Buttons */}
           <div className="flex justify-between space-x-4">
-            <Link href="/dashboard" className="w-1/2">
+            <Link href={"/dashboard/" + id} className="w-1/2">
               <div className="transform rounded-full border border-gray-300 bg-white py-2.5 text-center font-semibold text-gray-700 shadow-md transition-all duration-300 hover:scale-105 hover:bg-gray-100">
                 ย้อนกลับ
               </div>

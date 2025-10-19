@@ -1,59 +1,120 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-// Mock user data to simulate fetching from a database
-const MOCK_USER_DATA = {
-  name: "สมชาย รักสุขภาพ",
-  email: "somchai@example.com",
-  gender: "male",
-  profileImage: "/default-profile.png", // Default image or a user's image URL
-};
+import { useParams, useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function Profile() {
-  const [formData, setFormData] = useState({
-    name: MOCK_USER_DATA.name,
-    email: MOCK_USER_DATA.email,
-    password: "",
-    gender: MOCK_USER_DATA.gender,
-  });
-  const [previewImage, setPreviewImage] = useState<string | null>(
-    MOCK_USER_DATA.profileImage
-  );
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [image_file, setImageFile] = useState<File | null>(null);
+  const [old_image_file, setOldImageFile] = useState<string>("");
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
-  };
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [gender, setGender] = useState("");
+  const [userId, setUserId] = useState("");
+  const { id } = useParams();
+  const router = useRouter();
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await supabase
+        .from("user_tb")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        alert("พบปัญหาในการดึงข้อมูลผู้ใช้");
+        console.log(error.message);
+        return;
+      }
+
+      if (data) {
+        setUserId(data.user_id);
+        setFullName(data.fullname);
+        setEmail(data.email);
+        setPassword(data.password);
+        setGender(data.gender);
+        setPreviewImage(data.user_image_url);
+        setOldImageFile(data.user_image_url);
+      }
+    };
+    fetchData();
+  }, [id]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImage(reader.result as string);
-      };
+      reader.onloadend = () => setPreviewImage(reader.result as string);
       reader.readAsDataURL(file);
+      setImageFile(file);
     } else {
-      // Revert to original image if selection is cleared
-      setPreviewImage(MOCK_USER_DATA.profileImage);
+      setPreviewImage(null);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Logic to update user profile goes here
-    console.log("Profile updated!", {
-      ...formData,
-      profileImage: previewImage,
-    });
+
+    let image_url = old_image_file;
+
+    if (image_file) {
+      if (old_image_file) {
+        const oldImageName = old_image_file.split("/").pop();
+        if (oldImageName) {
+          const { error: removeError } = await supabase.storage
+            .from("user_bk")
+            .remove([oldImageName]);
+          if (removeError) {
+            console.log("ลบรูปเก่าไม่สำเร็จ:", removeError.message);
+          }
+        }
+      }
+
+      const fileExt = image_file.name.split(".").pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("user_bk")
+        .upload(fileName, image_file);
+
+      if (uploadError) {
+        alert("อัปโหลดรูปภาพไม่สำเร็จ");
+        console.log(uploadError.message);
+        return;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from("user_bk")
+        .getPublicUrl(fileName);
+
+      image_url = urlData.publicUrl;
+    }
+
+    const { error: updateError } = await supabase
+      .from("user_tb")
+      .update({
+        fullname: fullName,
+        email,
+        password,
+        gender,
+        user_image_url: image_url,
+      })
+      .eq("id", id);
+
+    if (updateError) {
+      alert("อัปเดตข้อมูลไม่สำเร็จ");
+      console.log(updateError.message);
+    } else {
+      alert("บันทึกข้อมูลเรียบร้อยแล้ว");
+      setOldImageFile(image_url);
+      setImageFile(null);
+      router.push("/dashboard/" + userId);
+    }
   };
 
   return (
@@ -72,8 +133,8 @@ export default function Profile() {
                 <Image
                   src={previewImage}
                   alt="Profile Preview"
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  className="object-cover"
                 />
               )}
             </div>
@@ -104,8 +165,8 @@ export default function Profile() {
             <input
               id="name"
               type="text"
-              value={formData.name}
-              onChange={handleInputChange}
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
               className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
               required
             />
@@ -121,8 +182,8 @@ export default function Profile() {
             <input
               id="email"
               type="email"
-              value={formData.email}
-              onChange={handleInputChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
               required
             />
@@ -138,9 +199,8 @@ export default function Profile() {
             <input
               id="password"
               type="password"
-              placeholder="กรอกรหัสผ่านใหม่ (หากต้องการเปลี่ยน)"
-              value={formData.password}
-              onChange={handleInputChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
             />
           </div>
@@ -155,9 +215,8 @@ export default function Profile() {
                   type="radio"
                   name="gender"
                   value="male"
-                  checked={formData.gender === "male"}
-                  onChange={handleInputChange}
-                  className="text-blue-600 focus:ring-blue-500"
+                  checked={gender === "male"}
+                  onChange={() => setGender("male")}
                 />
                 <span className="ml-2 text-gray-700">ชาย</span>
               </label>
@@ -166,9 +225,8 @@ export default function Profile() {
                   type="radio"
                   name="gender"
                   value="female"
-                  checked={formData.gender === "female"}
-                  onChange={handleInputChange}
-                  className="text-blue-600 focus:ring-blue-500"
+                  checked={gender === "female"}
+                  onChange={() => setGender("female")}
                 />
                 <span className="ml-2 text-gray-700">หญิง</span>
               </label>
@@ -177,7 +235,7 @@ export default function Profile() {
 
           {/* Action Buttons */}
           <div className="flex justify-between space-x-4">
-            <Link href="/dashboard" className="w-1/2">
+            <Link href={"/dashboard/" + userId} className="w-1/2">
               <div className="transform rounded-full border border-gray-300 bg-white py-2.5 text-center font-semibold text-gray-700 shadow-md transition-all duration-300 hover:scale-105 hover:bg-gray-100">
                 ย้อนกลับ
               </div>

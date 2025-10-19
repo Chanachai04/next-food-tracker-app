@@ -2,7 +2,7 @@
 
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 type Foods = {
   id: string;
@@ -16,12 +16,15 @@ type Foods = {
 };
 
 export default function Dashboard() {
-  const router = useRouter();
   const [foods, setFoods] = useState<Foods[]>([]);
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await supabase.from("food_td").select("*");
+      const { data, error } = await supabase
+        .from("food_td")
+        .select("*")
+        .eq("user_id", id);
       if (error) {
         alert("เกิดข้อผิดพลาดในการดึงข้อมูล");
         console.log(error);
@@ -32,11 +35,34 @@ export default function Dashboard() {
       }
     };
     fetchData();
-  }, []);
+  }, [id]);
 
-  const handleDelete = (id: number) => {
-    console.log(`Delete food item with ID: ${id}`);
-    // Add logic to delete the item from the data source
+  const handleDelete = async (foodId: string, image_url: string) => {
+    if (confirm("คุณต้องการลบรายการอาหารนี้ใช่หรือไม่")) {
+      if (image_url) {
+        const image_name = image_url.split("/").pop();
+        const { error } = await supabase.storage
+          .from("task_bk")
+          .remove([image_name as string]);
+        if (error) {
+          alert("พบปัญหาในการลบรูปภาพ ออกจาก Storage");
+          console.log(error.message);
+          return;
+        }
+      }
+
+      const { error } = await supabase
+        .from("food_td")
+        .delete()
+        .eq("id", foodId);
+      if (error) {
+        alert("พบปัญหาในการลบข้อมูล");
+        console.log(error.message);
+        return;
+      }
+
+      setFoods(foods.filter((food) => food.id !== foodId));
+    }
   };
 
   return (
@@ -48,7 +74,7 @@ export default function Dashboard() {
 
         {/* Search Bar and Add Food Button */}
         <div className="mb-6 flex flex-col items-center justify-between gap-4 md:flex-row">
-          <Link href="/addfood">
+          <Link href={"/addfood/" + id}>
             <div className="w-full transform rounded-full bg-green-500 px-6 py-2 font-semibold text-white shadow-md transition-all duration-300 hover:scale-105 hover:bg-green-600 md:w-auto">
               + Add Food
             </div>
@@ -73,13 +99,13 @@ export default function Dashboard() {
                   <td className="px-6 py-3">{food.foodname}</td>
                   <td className="px-6 py-3">{food.meal}</td>
                   <td className="px-6 py-3 text-right">
-                    <Link href={`/editfood/${food.id}`}>
+                    <Link href={`/updatefood/${food.id}`}>
                       <button className="mr-2 transform rounded-full bg-blue-500 px-4 py-2 font-semibold text-white shadow-md transition-all duration-300 hover:scale-105 hover:bg-blue-600">
                         แก้ไข
                       </button>
                     </Link>
                     <button
-                      onClick={() => handleDelete(Number(food.id))}
+                      onClick={() => handleDelete(food.id, food.food_image_url)}
                       className="transform rounded-full bg-red-500 px-4 py-2 font-semibold text-white shadow-md transition-all duration-300 hover:scale-105 hover:bg-red-600"
                     >
                       ลบ
