@@ -18,7 +18,6 @@ export default function Home() {
             layout="fill"
             objectFit="cover"
             className="shadow-lg transition-transform duration-300 hover:scale-105 rounded-3xl"
-            
           />
         </div>
 

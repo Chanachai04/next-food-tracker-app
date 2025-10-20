@@ -37,7 +37,7 @@ export default function Register() {
       const new_image_file_name = `${Date.now()}-${image_file.name}`;
 
       // อัปโหลดรูปภาพไปยัง Supabase Storage
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from("user_bk")
         .upload(new_image_file_name, image_file);
       if (error) {
@@ -54,7 +54,7 @@ export default function Register() {
     }
 
     // บันทึกข้อมูลงานลงในตาราง tasks
-    const { data, error } = await supabase.from("user_tb").insert({
+    const { error } = await supabase.from("user_tb").insert({
       fullname: fullName,
       email: email,
       password: password,
