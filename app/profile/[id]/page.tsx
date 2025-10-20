@@ -15,7 +15,6 @@ export default function Profile() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [gender, setGender] = useState("");
-  const [userId, setUserId] = useState("");
   const { id } = useParams();
   const router = useRouter();
   useEffect(() => {
@@ -33,7 +32,6 @@ export default function Profile() {
       }
 
       if (data) {
-        setUserId(data.user_id);
         setFullName(data.fullname);
         setEmail(data.email);
         setPassword(data.password);
@@ -113,7 +111,7 @@ export default function Profile() {
       alert("บันทึกข้อมูลเรียบร้อยแล้ว");
       setOldImageFile(image_url);
       setImageFile(null);
-      router.push("/dashboard/" + userId);
+      router.push("/dashboard/" + id);
     }
   };
 
@@ -235,7 +233,7 @@ export default function Profile() {
 
           {/* Action Buttons */}
           <div className="flex justify-between space-x-4">
-            <Link href={"/dashboard/" + userId} className="w-1/2">
+            <Link href={"/dashboard/" + id} className="w-1/2">
               <div className="transform rounded-full border border-gray-300 bg-white py-2.5 text-center font-semibold text-gray-700 shadow-md transition-all duration-300 hover:scale-105 hover:bg-gray-100">
                 ย้อนกลับ
               </div>

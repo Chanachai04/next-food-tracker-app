@@ -1,6 +1,7 @@
 "use client";
 
 import { supabase } from "@/lib/supabaseClient";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,9 +15,19 @@ type Foods = {
   created_at: string;
   update_at: string;
 };
-
+type UserTackers = {
+  id: string;
+  fullname: string;
+  email: string;
+  password: string;
+  gender: string;
+  user_image_url: string;
+  created_at: string;
+  update_at: string;
+};
 export default function Dashboard() {
   const [foods, setFoods] = useState<Foods[]>([]);
+  const [users, setUsers] = useState<UserTackers[]>([]);
   const { id } = useParams();
 
   useEffect(() => {
@@ -34,7 +45,23 @@ export default function Dashboard() {
         setFoods(data as Foods[]);
       }
     };
+    const getUsers = async () => {
+      const { data, error } = await supabase
+        .from("user_tb")
+        .select("*")
+        .eq("id", id);
+
+      if (error) {
+        alert("An error occurred while fetching user data.");
+        console.log(error);
+        return;
+      }
+      if (data) {
+        setUsers(data as UserTackers[]);
+      }
+    };
     fetchData();
+    getUsers();
   }, [id]);
 
   const handleDelete = async (foodId: string, image_url: string) => {
@@ -68,10 +95,22 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="container mx-auto max-w-4xl rounded-lg bg-white p-6 shadow-lg">
-        <h1 className="mb-6 text-3xl font-bold text-blue-600">
-          Food Dashboard
-        </h1>
-
+        <div className="flex justify-between items-center">
+          <h1 className="mb-6 text-3xl font-bold text-blue-600">
+            Food Dashboard
+          </h1>
+          {users.map((user) => (
+            <Link href={"/profile/" + user.id} key={user.id}>
+              <Image
+                src={user.user_image_url}
+                alt="User Profile"
+                width={100}
+                height={100}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            </Link>
+          ))}
+        </div>
         {/* Search Bar and Add Food Button */}
         <div className="mb-6 flex flex-col items-center justify-between gap-4 md:flex-row">
           <Link href={"/addfood/" + id}>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
@@ -9,13 +9,29 @@ import { useParams, useRouter } from "next/navigation";
 export default function AddFood() {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [image_file, setImageFile] = useState<File | null>(null);
-
   const [foodname, setFoodname] = useState("");
   const [meal, setMeal] = useState("");
   const [fooddate_at, setFooddate_at] = useState("");
+  const [userId, setUserId] = useState("");
 
   const { id } = useParams();
   const router = useRouter();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data, error } = await supabase
+        .from("food_tb")
+        .select("user_id")
+        .eq("user_id", id)
+        .single();
+      if (error) {
+        console.error("ไม่สามารถดึงข้อมูลผู้ใช้:", error.message);
+        return;
+      }
+      setUserId(data?.user_id);
+    };
+    getUser();
+  }, []);
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -59,7 +75,6 @@ export default function AddFood() {
       meal: meal,
       fooddate_at: fooddate_at,
       food_image_url: image_url,
-      user_id: id,
     });
 
     if (error) {
@@ -74,7 +89,7 @@ export default function AddFood() {
       setFooddate_at("");
       setPreviewImage(null);
       image_url = "";
-      router.push("/dashboard/" + id);
+      router.push("/dashboard/" + userId);
     }
   };
 
@@ -187,7 +202,7 @@ export default function AddFood() {
 
           {/* Action Buttons */}
           <div className="flex justify-between space-x-4">
-            <Link href={"/dashboard/" + id} className="w-1/2">
+            <Link href={"/dashboard/" + userId} className="w-1/2">
               <div className="transform rounded-full border border-gray-300 bg-white py-2.5 text-center font-semibold text-gray-700 shadow-md transition-all duration-300 hover:scale-105 hover:bg-gray-100">
                 ย้อนกลับ
               </div>

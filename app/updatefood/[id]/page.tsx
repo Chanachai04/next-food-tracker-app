@@ -32,6 +32,7 @@ export default function EditFood() {
       }
 
       if (data) {
+        setUserId(data.user_id);
         setFoodName(data.foodname);
         setMeal(data.meal);
         let formattedDate = "";
@@ -81,7 +82,7 @@ export default function EditFood() {
         const oldImageName = old_image_file.split("/").pop();
         if (oldImageName) {
           const { error: removeError } = await supabase.storage
-            .from("user_bk")
+            .from("food_bk")
             .remove([oldImageName]);
           if (removeError) {
             console.log("ลบรูปเก่าไม่สำเร็จ:", removeError.message);
