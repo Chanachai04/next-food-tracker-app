@@ -1,5 +1,7 @@
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/606945e3-5977-4fca-bfc0-e677cbb52bdd" alt="Food Tracker Banner" width="600" />
+  <img src="https://github.com/user-attachments/assets/b35f4427-ed16-4abe-a5f1-ed73b5ff1316" alt="Food Tracker Banner" width="600" />
+
+
   <br/>
   <br/>
   <h1>🍔 Food Tracker</h1>
@@ -33,10 +35,10 @@
 
 |                                                     Dashboard & Overview                                                      |                                                        Details & Forms                                                        |
 | :---------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------: |
-| <img src="https://github.com/user-attachments/assets/1a51b342-5ed8-468b-83c0-dcb1fe0e5576" alt="Screenshot 2" width="100%"/>  | <img src="https://github.com/user-attachments/assets/90d11b08-6d79-4102-8b90-5c1d1befa493" alt="Screenshot 3" width="100%" /> |
-| <img src="https://github.com/user-attachments/assets/38b4a28f-9790-47ac-8147-c9a48fd68f95" alt="Screenshot 4" width="100%" /> | <img src="https://github.com/user-attachments/assets/252c4240-0b23-4d46-b711-f5462d6c5efe" alt="Screenshot 5" width="100%" /> |
+| <img src="https://github.com/user-attachments/assets/debae506-f25a-47b2-b757-0eb81f489aae" alt="Screenshot 2" width="100%"/>  | <img src="https://github.com/user-attachments/assets/310675e6-7f7e-4cab-bb6a-a481661c3d89" alt="Screenshot 3" width="100%" /> |
+| <img src="https://github.com/user-attachments/assets/2f088815-f752-4a5e-9346-dc7f77b9ce10" alt="Screenshot 4" width="100%" /> | <img src="https://github.com/user-attachments/assets/b5c87c3c-f24e-46f3-93bd-13345778d4a2" alt="Screenshot 5" width="100%" /> |
 
-<img src="https://github.com/user-attachments/assets/35ece88a-a4d8-4491-a6c2-939395ab7134" alt="Screenshot 6" width="100%" />
+<img src="https://github.com/user-attachments/assets/ea785f5e-f15c-4cae-912b-389d8a4c4a99" alt="Screenshot 6" width="100%" />
 
 </details>
 
