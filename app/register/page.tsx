@@ -78,24 +78,28 @@ export default function Register() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 text-black">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-2xl">
-        <h1 className="mb-6 text-center text-3xl font-bold text-blue-600">
-          Register
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-white to-blue-50 p-4 text-slate-800 relative overflow-hidden py-10">
+      {/* Decorative background shapes */}
+      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-100/50 mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-200/50 mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+
+      <div className="w-full max-w-md rounded-[2rem] bg-white/80 backdrop-blur-xl p-8 sm:p-10 shadow-2xl border border-white/50 z-10">
+        <h1 className="mb-8 text-center text-3xl font-extrabold text-blue-600 tracking-tight">
+          ลงทะเบียน
         </h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label
               htmlFor="name"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1.5 block text-sm font-semibold text-slate-700"
             >
-              ชื่อ-สกุล
+              ชื่อ-นามสกุล
             </label>
             <input
               id="name"
               type="text"
-              placeholder="Full Name"
-              className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              placeholder="กรอกชื่อ-นามสกุลของคุณ"
+              className="w-full rounded-xl border border-slate-200 bg-white/50 p-3 text-slate-800 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
@@ -105,15 +109,15 @@ export default function Register() {
           <div>
             <label
               htmlFor="email"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1.5 block text-sm font-semibold text-slate-700"
             >
-              อีเมล์
+              อีเมล
             </label>
             <input
               id="email"
               type="email"
-              placeholder="Email"
-              className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              placeholder="กรอกอีเมลของคุณ"
+              className="w-full rounded-xl border border-slate-200 bg-white/50 p-3 text-slate-800 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -123,15 +127,15 @@ export default function Register() {
           <div>
             <label
               htmlFor="password"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1.5 block text-sm font-semibold text-slate-700"
             >
               รหัสผ่าน
             </label>
             <input
               id="password"
               type="password"
-              placeholder="Password"
-              className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              placeholder="กรอกรหัสผ่านของคุณ"
+              className="w-full rounded-xl border border-slate-200 bg-white/50 p-3 text-slate-800 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -139,29 +143,29 @@ export default function Register() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">
               เพศ
             </label>
-            <div className="flex space-x-4">
-              <label className="inline-flex items-center">
+            <div className="flex space-x-6">
+              <label className="inline-flex items-center cursor-pointer">
                 <input
                   type="radio"
                   name="gender"
                   value="male"
-                  className="text-blue-600 focus:ring-blue-500"
+                  className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 transition-all"
                   onChange={(e) => setGender(e.target.value)}
                 />
-                <span className="ml-2 text-gray-700">ชาย</span>
+                <span className="ml-2 text-slate-700 font-medium">ชาย</span>
               </label>
-              <label className="inline-flex items-center">
+              <label className="inline-flex items-center cursor-pointer">
                 <input
                   type="radio"
                   name="gender"
                   value="female"
-                  className="text-blue-600 focus:ring-blue-500"
+                  className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 transition-all"
                   onChange={(e) => setGender(e.target.value)}
                 />
-                <span className="ml-2 text-gray-700">หญิง</span>
+                <span className="ml-2 text-slate-700 font-medium">หญิง</span>
               </label>
             </div>
           </div>
@@ -169,7 +173,7 @@ export default function Register() {
           <div>
             <label
               htmlFor="profileImage"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1.5 block text-sm font-semibold text-slate-700"
             >
               รูปโปรไฟล์
             </label>
@@ -178,19 +182,19 @@ export default function Register() {
               type="file"
               accept="image/*"
               onChange={handleImageChange}
-              className="w-full rounded-md border border-gray-300 p-2 text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
+              className="w-full rounded-xl border border-slate-200 bg-white/50 p-2 text-sm text-slate-500 file:mr-4 file:cursor-pointer file:rounded-lg file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100 transition-all"
             />
           </div>
 
           {previewImage && (
-            <div className="mb-4 text-center">
-              <p className="text-sm font-medium text-gray-700">Image Preview</p>
-              <div className="relative mx-auto mt-2 h-32 w-32 overflow-hidden rounded-full border-2 border-blue-500 shadow-md">
+            <div className="mb-6 text-center animate-fade-in">
+              <p className="text-sm font-semibold text-slate-700 mb-3">ตัวอย่างรูปโปรไฟล์</p>
+              <div className="relative mx-auto h-32 w-32 overflow-hidden rounded-full border-4 border-blue-100 shadow-xl">
                 <Image
                   src={previewImage}
                   alt="Profile Preview"
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  style={{ objectFit: "cover" }}
                 />
               </div>
             </div>
@@ -198,19 +202,19 @@ export default function Register() {
 
           <button
             type="submit"
-            className="w-full transform rounded-full bg-blue-600 py-2.5 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
+            className="w-full mt-4 transform rounded-full bg-blue-600 py-3 font-bold text-white shadow-xl shadow-blue-600/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-blue-600/50 focus:outline-none focus:ring-4 focus:ring-blue-300 active:scale-95"
           >
-            ลงทะเบียน
+            ลงทะเบียน (Register)
           </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-600">
-          Already have an account?{" "}
+        <div className="mt-8 text-center text-sm text-slate-600">
+          มีบัญชีผู้ใช้แล้วใช่ไหม?{" "}
           <Link
             href="/login"
-            className="font-semibold text-blue-600 hover:underline"
+            className="font-bold text-blue-600 hover:text-blue-700 hover:underline transition-colors"
           >
-            Login here
+            เข้าสู่ระบบที่นี่
           </Link>
         </div>
       </div>

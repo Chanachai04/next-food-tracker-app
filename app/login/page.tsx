@@ -29,24 +29,28 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 text-black">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-2xl">
-        <h1 className="mb-6 text-center text-3xl font-bold text-blue-600">
-          Login
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-white to-blue-50 p-4 text-slate-800 relative overflow-hidden">
+      {/* Decorative background shapes */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-100/50 mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-200/50 mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+
+      <div className="w-full max-w-md rounded-[2rem] bg-white/80 backdrop-blur-xl p-8 shadow-2xl border border-white/50 z-10">
+        <h1 className="mb-6 text-center text-3xl font-extrabold text-blue-600 tracking-tight">
+          เข้าสู่ระบบ
         </h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label
               htmlFor="email"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1.5 block text-sm font-semibold text-slate-700"
             >
-              อีเมล์
+              อีเมล
             </label>
             <input
               id="email"
               type="email"
-              placeholder="Email"
-              className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              placeholder="กรอกอีเมลของคุณ"
+              className="w-full rounded-xl border border-slate-200 bg-white/50 p-3 text-slate-800 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all"
               onChange={(e) => setEmail(e.target.value)}
               required
             />
@@ -55,15 +59,15 @@ export default function Login() {
           <div>
             <label
               htmlFor="password"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1.5 block text-sm font-semibold text-slate-700"
             >
               รหัสผ่าน
             </label>
             <input
               id="password"
               type="password"
-              placeholder="Password"
-              className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              placeholder="กรอกรหัสผ่านของคุณ"
+              className="w-full rounded-xl border border-slate-200 bg-white/50 p-3 text-slate-800 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all"
               onChange={(e) => setPassword(e.target.value)}
               required
             />
@@ -71,19 +75,19 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full transform rounded-full bg-blue-600 py-2.5 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
+            className="w-full mt-2 transform rounded-full bg-blue-600 py-3 font-bold text-white shadow-xl shadow-blue-600/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-blue-600/50 focus:outline-none focus:ring-4 focus:ring-blue-300 active:scale-95"
           >
-            เข้าสู่ระบบ
+            เข้าสู่ระบบ (Login)
           </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-600">
-          Don&apos;t have an account?{" "}
+        <div className="mt-8 text-center text-sm text-slate-600">
+          ยังไม่มีบัญชีผู้ใช้?{" "}
           <Link
             href="/register"
-            className="font-semibold text-blue-600 hover:underline"
+            className="font-bold text-blue-600 hover:text-blue-700 hover:underline transition-colors"
           >
-            Register here
+            ลงทะเบียนที่นี่
           </Link>
         </div>
       </div>

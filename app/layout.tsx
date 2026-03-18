@@ -23,7 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${prompt.className} antialiased`}>{children}</body>
+      <body className={`${prompt.className} antialiased bg-slate-50 text-slate-800 min-h-screen flex flex-col selection:bg-blue-200 selection:text-blue-900`}>
+        {children}
+      </body>
     </html>
   );
 }
