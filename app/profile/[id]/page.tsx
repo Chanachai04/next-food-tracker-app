@@ -135,6 +135,14 @@ export default function Profile() {
                   className="object-cover"
                 />
               )}
+              {!previewImage && (
+                <Image
+                  src={"/default-profile.png"}
+                  alt="Profile Preview"
+                  fill
+                  className="object-cover"
+                />
+              )}
             </div>
 
             <label

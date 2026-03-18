@@ -14,6 +14,7 @@ export default function AddFood() {
   const [fooddate_at, setFooddate_at] = useState("");
 
   const { id } = useParams();
+
   const router = useRouter();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -102,7 +102,7 @@ export default function Dashboard() {
           {users.map((user) => (
             <Link href={"/profile/" + user.id} key={user.id}>
               <Image
-                src={user.user_image_url}
+                src={user.user_image_url || "/default-profile.png"}
                 alt="User Profile"
                 width={100}
                 height={100}
