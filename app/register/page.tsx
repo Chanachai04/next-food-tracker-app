@@ -53,17 +53,24 @@ export default function Register() {
       }
     }
 
-    // บันทึกข้อมูลงานลงในตาราง tasks
-    const { error } = await supabase.from("user_tb").insert({
-      fullname: fullName,
-      email: email,
-      password: password,
-      gender: gender,
-      user_image_url: image_url,
+    // บันทึกข้อมูลผ่าน API route (hash password ฝั่ง server)
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        fullname: fullName,
+        email: email,
+        password: password,
+        gender: gender,
+        user_image_url: image_url,
+      }),
     });
 
-    if (error) {
-      console.log(error.message);
+    const result = await res.json();
+
+    if (!res.ok) {
+      alert(result.error || "เกิดข้อผิดพลาดในการลงทะเบียน");
+      console.log(result.error);
       return;
     } else {
       alert("บันทึกข้อมูลเรียบร้อย");

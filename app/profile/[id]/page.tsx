@@ -13,7 +13,7 @@ export default function Profile() {
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [gender, setGender] = useState("");
   const { id } = useParams();
   const router = useRouter();
@@ -34,7 +34,7 @@ export default function Profile() {
       if (data) {
         setFullName(data.fullname);
         setEmail(data.email);
-        setPassword(data.password);
+        // ไม่โหลด hashed password กลับมาแสดงในฟอร์ม
         setGender(data.gender);
         setPreviewImage(data.user_image_url);
         setOldImageFile(data.user_image_url);
@@ -93,12 +93,27 @@ export default function Profile() {
       image_url = urlData.publicUrl;
     }
 
+    // ถ้ามีการเปลี่ยนรหัสผ่าน → hash ผ่าน API route
+    if (newPassword) {
+      const pwRes = await fetch("/api/auth/update-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, password: newPassword }),
+      });
+
+      if (!pwRes.ok) {
+        const pwResult = await pwRes.json();
+        alert(pwResult.error || "อัปเดตรหัสผ่านไม่สำเร็จ");
+        return;
+      }
+    }
+
+    // อัปเดตข้อมูลอื่นๆ (ยกเว้น password)
     const { error: updateError } = await supabase
       .from("user_tb")
       .update({
         fullname: fullName,
         email,
-        password,
         gender,
         user_image_url: image_url,
       })
@@ -111,6 +126,7 @@ export default function Profile() {
       alert("บันทึกข้อมูลเรียบร้อยแล้ว");
       setOldImageFile(image_url);
       setImageFile(null);
+      setNewPassword("");
       router.push("/dashboard/" + id);
     }
   };
@@ -203,13 +219,13 @@ export default function Profile() {
               htmlFor="password"
               className="mb-1.5 block text-sm font-semibold text-slate-700"
             >
-              รหัสผ่าน (เว้นว่างหากไม่ต้องการเปลี่ยน)
+              รหัสผ่านใหม่ (เว้นว่างหากไม่ต้องการเปลี่ยน)
             </label>
             <input
               id="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
               className="w-full rounded-xl border border-slate-200 bg-white/50 p-3 text-slate-800 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all"
             />
           </div>

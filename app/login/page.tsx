@@ -1,6 +1,5 @@
 "use client";
 
-import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,20 +10,23 @@ export default function Login() {
   const router = useRouter();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { data, error } = await supabase
-      .from("user_tb")
-      .select("*")
-      .eq("email", email)
-      .eq("password", password)
-      .single();
 
-    if (error) {
-      alert("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
-      console.log(error);
+    // เรียก API route เพื่อตรวจสอบรหัสผ่านด้วย bcrypt
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      alert(result.error || "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+      console.log(result.error);
       return;
     }
 
-    router.push("/dashboard/" + data.id);
+    router.push("/dashboard/" + result.user.id);
     console.log("Login form submitted!");
   };
 
