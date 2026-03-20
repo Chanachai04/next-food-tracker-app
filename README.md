@@ -33,12 +33,23 @@
 <summary><b>คลิกเพื่อดูรูปภาพเพิ่มเติม</b></summary>
 <br/>
 
-|                                                     Dashboard & Overview                                                      |                                                        Details & Forms                                                        |
-| :---------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------: |
-| <img src="https://github.com/user-attachments/assets/debae506-f25a-47b2-b757-0eb81f489aae" alt="Screenshot 2" width="100%"/>  | <img src="https://github.com/user-attachments/assets/310675e6-7f7e-4cab-bb6a-a481661c3d89" alt="Screenshot 3" width="100%" /> |
-| <img src="https://github.com/user-attachments/assets/2f088815-f752-4a5e-9346-dc7f77b9ce10" alt="Screenshot 4" width="100%" /> | <img src="https://github.com/user-attachments/assets/b5c87c3c-f24e-46f3-93bd-13345778d4a2" alt="Screenshot 5" width="100%" /> |
-
-<img src="https://github.com/user-attachments/assets/ea785f5e-f15c-4cae-912b-389d8a4c4a99" alt="Screenshot 6" width="100%" />
+<table align="center">
+  <tr>
+    <th colspan="2" style="text-align: center;">Dashboard & Overview</th>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/debae506-f25a-47b2-b757-0eb81f489aae" width="100%"/></td>
+    <td><img src="https://github.com/user-attachments/assets/310675e6-7f7e-4cab-bb6a-a481661c3d89" width="100%"/></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/2f088815-f752-4a5e-9346-dc7f77b9ce10" width="100%"/></td>
+    <td><img src="https://github.com/user-attachments/assets/b5c87c3c-f24e-46f3-93bd-13345778d4a2" width="100%"/></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/ea785f5e-f15c-4cae-912b-389d8a4c4a99" width="100%"/></td>
+    <td><img src="https://github.com/user-attachments/assets/8d0da9cc-cf69-456a-800b-7cf2e523adac" width="100%"/></td>
+  </tr>
+</table>
 
 </details>
 
